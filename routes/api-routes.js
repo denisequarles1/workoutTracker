@@ -1,32 +1,53 @@
-//db
-const db = require('../models')
-module.exports = (app) => {
+const Workout = require("../models /workout")
 
-    //////Workout Routes//////
-    //get all
-    app.get("/api/workouts", (req, res) => {
-        db.Workout.find({}, (err, workouts) => {
-            if(err){
-                console.log(err);
-            } else {
-                res.json(workouts)
-            }
-        });
-    });
-    //add excerise, set id, push to model, set true
-    app.put("/api/workouts/:workout", ({ params, body }, res) => {
-        db.Workout.findOneAndUpdate({ _id: params.id},
-                                    {$push: {excercises:body }},
-                                    { upsert: true, useFindandModify:false},
-                                    updatedWorkout => {
-                                        res.json(updatedWorkout);
-                                    })
-    });
-    //create new workout
-    app.post('/api/workouts', (req,res) => {
-        db.Workout.create({}).then(newWorkout => {
-            res.json(newWorkout);
-        });
+module.exports = function(app){ 
+    app.get("/api/workouts",function(req,res){  
+        Workout.find()
+        .then(data =>{  
+            res.json(data)
+        })
+        .catch(err => { 
+            res.json(err)
+        })
     });
 
+
+    app.post("/api/workouts",function (req,res){    
+        Workout.create({})
+        .then(data => res.json(data))
+        .catch(err => { 
+            res.json(err)
+        })
+    });
+
+    app.get("/api/workouts/range",function(req,res){  
+        Workout.find()
+        .then(data =>{  
+            res.json(data)
+        })
+        .catch(err => { 
+            res.json(err)
+        })
+    });
+
+
+    app.post("/api/workouts/range",function (req,res){    
+        Workout.create({})
+        .then(data => res.json(data))
+        .catch(err => { 
+            res.json(err)
+        })
+    });
+
+    app.put("/api/workouts/:id",({body,params},res)=>{   
+        Workout.findByIdAndUpdate(  
+         params.id,
+         {$push:{exercises:body} },
+         {new: true,runValidators:true }
+        )
+        .then(data => res.json(data))
+        .catch(err => { 
+            res.json(err)
+        })
+    });
 }
