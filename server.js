@@ -1,46 +1,31 @@
-const express = require("express");
-const logger = require("morgan");
-const mongoose = require("mongoose");
-const path = require("path");
-
-
+//install packages
+const express = require('express');
+const logger = require('morgan');
+const mongoose = require('mongoose');
+//set port
 const PORT = process.env.PORT || 3000;
 
 const app = express();
 
+//use logger
 app.use(logger("dev"));
 
+//parser
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+//use static files
 app.use(express.static("public"));
 
-// mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", { useNewUrlParser: true });
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/fittrack", {useNewUrlParser: true});
 
-mongoose.connect(
-    process.env.MONGODB_URI || 'mongodb://localhost/workout',
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useCreateIndex: true,
-      useFindAndModify: false
-    }
-  );
+//require('./seeders/seed')
 
-require("./routes/api-routes.js")(app);
+//use routes
+require('./routes/api-routes')(app)
+require('./routes/html-routes')(app)
 
-app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname + "/public/index.html"));
-});
-
-app.get("/exercise", (req, res) => {
-    res.sendFile(path.join(__dirname + "/public/exercise.html"));
-});
-
-app.get("/stats", (req, res) => {
-    res.sendFile(path.join(__dirname + "/public/stats.html"));
-});
 
 app.listen(PORT, () => {
-    console.log(`App running on port ${PORT}!`);
-});
+    console.log(`App running on port ${PORT}..`);
+})
