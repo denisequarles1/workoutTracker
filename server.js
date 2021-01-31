@@ -4,7 +4,6 @@ const logger = require('morgan');
 const mongoose = require('mongoose');
 //set port
 const PORT = process.env.PORT || 8080;
-
 const app = express();
 
 //use logger
@@ -17,8 +16,11 @@ app.use(express.json());
 //use static files
 app.use(express.static("public"));
 
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workoutTracker", {useNewUrlParser: true});
-
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/workoutTracker";
+mongoose.connect(MONGODB_URI,{  
+    useNewUrlParser:true,
+    useFindAndModify:false
+})
 
 
 //use routes
